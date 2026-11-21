@@ -4,6 +4,15 @@
 // Add only verified publications with their original source.
 
 const trendingPosts = [
+{
+  category: "VIRAL POLITICS",
+  title: "Politicians Jump Into the GTA VI Meme Frenzy",
+  summary: "The viral Grand Theft Auto VI launch inspired political memes from the White House, House Republicans and Vice President J.D. Vance, turning a gaming moment into an online political spectacle.",
+  source: "New York Magazine",
+  date: "2026-11-21",
+  url: "https://nymag.com/intelligencer/article/everyone-sucks-at-the-gta-political-meme-war.html"
+},
+
   // Example:
   // {
   //   category: "CONGRESS",
