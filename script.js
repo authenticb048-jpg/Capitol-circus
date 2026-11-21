@@ -1,13 +1,88 @@
-// MANUAL FEED: add verified public X post links below. No fake posts or engagement figures.
+
+
+// CAPITOL CIRCUS — MANUAL PUBLICATION FEED
+// Add only verified publications with their original source.
+
 const trendingPosts = [
-  // { category: "CONGRESS", title: "Neutral headline", summary: "Short factual context.", author: "@OriginalAuthor", date: "2026-11-21", likes: "—", reposts: "—", url: "https://x.com/OriginalAuthor/status/123" }
+  // Example:
+  // {
+  //   category: "CONGRESS",
+  //   title: "Your verified headline",
+  //   summary: "A short, neutral explanation of the story.",
+  //   source: "Official source name",
+  //   date: "2026-11-21",
+  //   url: "https://example.com/original-article"
+  // }
 ];
+
 const latestPosts = [
-  // { date: "2026-11-21", title: "Recent public post", summary: "Brief context.", author: "@OriginalAuthor", url: "https://x.com/OriginalAuthor/status/123" }
+  // Add recent publications here using the same format.
 ];
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function link(url){try{const u=new URL(url);if(u.protocol!=="https:"||!["x.com","www.x.com","twitter.com","www.twitter.com"].includes(u.hostname))return "";return `<a href="${u.href}" target="_blank" rel="noopener noreferrer">Open original post ↗</a>`;}catch{return "";}}
-document.getElementById("trending-feed").innerHTML=trendingPosts.length?trendingPosts.map(p=>`<article class="post"><small>${esc(p.category||"POLITICAL CONVERSATION")}</small><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p><small>${esc(p.author)} · ${esc(p.date)} · Likes ${esc(p.likes)} · Reposts ${esc(p.reposts)}</small><p>${link(p.url)}</p></article>`).join(""):'<div class="empty">No posts added yet. Add verified public X links in script.js.</div>';
-document.getElementById("latest-feed").innerHTML=latestPosts.length?latestPosts.map(p=>`<article class="latest-item"><b>${esc(p.date)}</b><div><h3>${esc(p.title)}</h3><p>${esc(p.summary)} · ${esc(p.author)}</p></div>${link(p.url)}</article>`).join(""):'<div class="empty">No recent posts added yet. Add verified posts and dates in script.js.</div>';
-document.getElementById("year").textContent=new Date().getFullYear();
-document.getElementById("menu").addEventListener("click",()=>document.getElementById("nav").classList.toggle("open"));
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+function sourceLink(url, source) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return "";
+    return `<a href="${esc(parsed.href)}" target="_blank" rel="noopener noreferrer">Read original source: ${esc(source || "Original source")} ↗</a>`;
+  } catch {
+    return "";
+  }
+}
+
+function renderTrending(posts) {
+  const container = document.getElementById("trending-feed");
+  if (!container) return;
+
+  container.innerHTML = posts.length
+    ? posts.map(post => `
+      <article class="post">
+        <small>${esc(post.category || "HEADLINES")}</small>
+        <h3>${esc(post.title)}</h3>
+        <p>${esc(post.summary)}</p>
+        <small>${esc(post.source)} · ${esc(post.date)}</small>
+        <p>${sourceLink(post.url, post.source)}</p>
+      </article>
+    `).join("")
+    : '<div class="empty">No verified stories added yet. Check back soon.</div>';
+}
+
+function renderLatest(posts) {
+  const container = document.getElementById("latest-feed");
+  if (!container) return;
+
+  container.innerHTML = posts.length
+    ? posts.map(post => `
+      <article class="latest-item">
+        <b>${esc(post.date)}</b>
+        <div>
+          <h3>${esc(post.title)}</h3>
+          <p>${esc(post.summary)} · ${esc(post.source)}</p>
+        </div>
+        ${sourceLink(post.url, post.source)}
+      </article>
+    `).join("")
+    : '<div class="empty">No recent publications yet. Check back soon.</div>';
+}
+
+renderTrending(trendingPosts);
+renderLatest(latestPosts);
+
+const year = document.getElementById("year");
+if (year) year.textContent = new Date().getFullYear();
+
+const menu = document.getElementById("menu");
+const nav = document.getElementById("nav");
+
+if (menu && nav) {
+  menu.addEventListener("click", () => nav.classList.toggle("open"));
+}
